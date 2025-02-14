@@ -7,11 +7,13 @@ import { Battery, Zap, Globe } from "lucide-react"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-// 数字动画组件
-const AnimatedNumber = ({ value, duration = 1 }) => {
+const AnimatedNumber = (AnimatedNumber: { duration: number; value: number }) => {
   const [displayValue, setDisplayValue] = useState(0)
   const ref = useRef(null)
   const isInView = useInView(ref)
+
+  const value = AnimatedNumber.value;
+  const duration = AnimatedNumber.duration;
 
   useEffect(() => {
     if (!isInView) return
@@ -19,8 +21,8 @@ const AnimatedNumber = ({ value, duration = 1 }) => {
     let startTimestamp: number
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp
-      const progress = Math.min((timestamp - startTimestamp) / (duration * 1000), 1)
-      setDisplayValue(Math.floor(progress * value))
+      const progress = Math.min((timestamp - startTimestamp) / (AnimatedNumber.duration * 1000), 1)
+      setDisplayValue(Math.floor(progress * AnimatedNumber.value))
       if (progress < 1) {
         window.requestAnimationFrame(step)
       }
@@ -46,8 +48,7 @@ export default function Page() {
   // 导航栏背景透明度
   const navBgOpacity = useTransform(scrollY, [0, 100], [0, 1])
   const springNavBgOpacity = useSpring(navBgOpacity, { stiffness: 100, damping: 30 })
-
-  const cities = {
+  const cities: Record<string, { name: string; stations: number; availability: number }> = {
     london: {
       name: "London",
       stations: 2345,
@@ -73,7 +74,8 @@ export default function Page() {
       stations: 1677,
       availability: 97,
     },
-  }
+  };
+
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -195,7 +197,7 @@ export default function Page() {
                 >
                   <Battery className="w-8 h-8 text-primary mb-4" />
                   <h3 className="text-4xl font-bold mb-2">
-                    <AnimatedNumber value={cities[selectedCity].stations} />
+                    <AnimatedNumber value={cities[selectedCity].stations} duration={1000} />
                   </h3>
                   <p className="text-gray-400">Active Charging Stations</p>
                 </motion.div>
@@ -208,7 +210,7 @@ export default function Page() {
                 >
                   <Zap className="w-8 h-8 text-primary mb-4" />
                   <h3 className="text-4xl font-bold mb-2">
-                    <AnimatedNumber value={cities[selectedCity].availability} />%
+                    <AnimatedNumber value={cities[selectedCity].availability} duration={0} />%
                   </h3>
                   <p className="text-gray-400">Network Availability</p>
                 </motion.div>
