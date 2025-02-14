@@ -197,7 +197,7 @@ export default function Page() {
                 >
                   <Battery className="w-8 h-8 text-primary mb-4" />
                   <h3 className="text-4xl font-bold mb-2">
-                    <AnimatedNumber value={cities[selectedCity].stations} duration={1000} />
+                    <AnimatedNumber value={cities[selectedCity].stations} duration={1} />
                   </h3>
                   <p className="text-gray-400">Active Charging Stations</p>
                 </motion.div>
