@@ -122,6 +122,9 @@ export default function Page() {
                 <Link href="/map" className="hover:text-primary transition-colors">
                   Map
                 </Link>
+                <Link href="/cases" className="hover:text-primary transition-colors">
+                  Cases
+                </Link>
                 <Link href="/contact" className="hover:text-primary transition-colors">
                   Contact
                 </Link>

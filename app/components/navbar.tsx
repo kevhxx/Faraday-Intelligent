@@ -21,6 +21,7 @@ export default function Navbar({
     { href: "/technology", label: "Technology" },
     { href: "/ai-model", label: "AI Model" },
     { href: "/map", label: "Map" },
+    { href: "/cases", label: "Cases" },
     { href: "/contact", label: "Contact" },
   ]
 
