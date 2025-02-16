@@ -67,24 +67,6 @@ const improvementStations = [
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [-0.195952, 51.485608],
-        },
-        properties: {
-          name: "Seagrave Road Charging Point",
-          operator: "Hammersmith and Fulham Council",
-          address: "35 Seagrave Road, London, SW6 1SA",
-          Comments: "Major Underperforming station",
-          connectors: [
-            { type: "Type 2", power_kw: 22 },
-            { type: "CHAdeMO", power_kw: 50 },
-            { type: "CCS", power_kw: 50 },
-          ],
-        },
-      },
-      {
-        type: "Feature",
-        geometry: {
-          type: "Point",
           coordinates: [-0.221589, 51.476378],
         },
         properties: {
@@ -200,6 +182,27 @@ const improvementStations = [
       },
     ],
   },
+];
+
+const redMarker = [
+  {
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [-0.195952, 51.485608],
+    },
+    properties: {
+      name: "Seagrave Road Charging Point",
+      operator: "Hammersmith and Fulham Council",
+      address: "35 Seagrave Road, London, SW6 1SA",
+      Comments: "Critical issue at this underperforming station",
+      connectors: [
+        { type: "Type 2", power_kw: 22 },
+        { type: "CHAdeMO", power_kw: 50 },
+        { type: "CCS", power_kw: 50 },
+      ],
+    },
+  }
 ];
 
 
@@ -321,6 +324,50 @@ export default function SuggestedStationsPage() {
 
           new mapboxgl.Marker(markerEl).setLngLat(lngLat).setPopup(popup).addTo(map.current!)
         })
+      })
+
+      // Add red marker for critical stations
+
+      redMarker.forEach((feature) => {
+
+        const markerEl = document.createElement("div")
+
+        markerEl.className = "custom-marker"
+
+        markerEl.innerHTML = `
+          <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+               </svg> 
+               </div>`
+        const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+          <div class="p-4 max-w-sm">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="bg-red-500 text-gray-300 px-2 py-1 rounded text-sm">Critical Issue</span>
+            </div>
+            <h3 class="font-bold text-lg mb-2">${feature.properties.name}</h3>
+            <p class="text-gray-600 mb-2">${feature.properties.address}</p>
+            <p class="text-sm text-gray-500 mb-2">Operator: ${feature.properties.operator}</p>
+            <p class="text-sm text-red-500 mb-3">${feature.properties.Comments}</p>
+            <div class="space-y-2">
+              <h4 class="font-semibold">Connectors:</h4>
+              ${feature.properties.connectors
+                .map(
+                  (connector: { type: string; power_kw: number }) =>
+                    `<div class="flex items-center gap-2">
+                      <span class="text-red-500">⚡</span>
+                      <span>${connector.type} - ${connector.power_kw}kW</span>
+                    </div>`,
+                ).join("")}
+            </div>
+          </div>`)
+        const lngLat: [number, number] = feature.geometry.coordinates.length >= 2
+            ? [feature.geometry.coordinates[0], feature.geometry.coordinates[1]]
+            : [0, 0]; // 备用默认坐标
+        new mapboxgl.Marker(markerEl).setLngLat(lngLat).setPopup(popup).addTo(map.current!)
+
       })
     })
 
