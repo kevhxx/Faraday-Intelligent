@@ -41,7 +41,7 @@ const suggestedStations = [
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [0.063495501, 51.443777],
+          coordinates: [-0.191455, 51.477447],
         },
         properties: {
           name: "Advised Charging Station",
@@ -105,7 +105,7 @@ export default function SuggestedStationsPage() {
             <div class="p-4 max-w-sm">
               <h3 class="font-bold text-lg mb-2">${feature.properties.name}</h3>
               <p class="text-gray-600 mb-2">${feature.properties.address}</p>
-              <p class="text-sm text-gray-500 mb-2">Suggested by: ${feature.properties.suggest_by}</p>
+              <p class="text-sm text-gray-500 mb-2">Operator: Shell</p>
               <p class="text-sm text-gray-500 mb-3">${feature.properties.usage_cost}</p>
               <div class="space-y-2">
                 <h4 class="font-semibold">Connectors:</h4>
@@ -122,8 +122,11 @@ export default function SuggestedStationsPage() {
             </div>
           `)
 
+          const lngLat: [number, number] = feature.geometry.coordinates.length >= 2
+          ? [feature.geometry.coordinates[0], feature.geometry.coordinates[1]]
+          : [0, 0]; // 备用默认坐标
           // Add marker to map
-          new mapboxgl.Marker(markerEl).setLngLat(feature.geometry.coordinates).setPopup(popup).addTo(map.current!)
+          new mapboxgl.Marker(markerEl).setLngLat(lngLat).setPopup(popup).addTo(map.current!)
         })
       })
     })
